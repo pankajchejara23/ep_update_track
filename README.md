@@ -12,7 +12,7 @@ Tracks are stored in csv format. A snapshot of recorded data is provided in the 
 
 
 ![Snapsho](snapshot.png)
-*Fig.1: Snapshot of recorded updates*
+
 
 
 
