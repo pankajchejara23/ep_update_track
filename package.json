@@ -1,0 +1,9 @@
+{
+  "name": "ep_update_track",
+  "description": "This plugin tracks all the updates and store them in csv file.",
+  "version": "0.0.1",
+  "author": "Pankaj Chejara <pankajchejara23@gmail.com>",
+  "contributors": [],
+  "dependencies": {},
+  "engines": { "node": ">= 0.4.1 < 0.7.0" }
+}

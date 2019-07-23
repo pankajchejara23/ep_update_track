@@ -1,0 +1,10 @@
+{
+  "parts": [
+    {
+      "name": "Tracker",
+      "hooks": {
+        "handleMessage": "ep_update_track/index:handleMessage"
+      }
+    }
+  ]
+}
