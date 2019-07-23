@@ -9,7 +9,9 @@ An etherpad-lite plugin to track updates in pads and store them in CSV format fo
 
 # CSV format
 Tracks are stored in csv format. A snapshot of recorded data is provided in the below image
+
 ![Snapsho](snapshot.png)
+*Fig.1: Snapshot of recorded updates*
 The order of attributes are timestamp,client-ip,action-type,old-lenght,new-length, changeset,character-bank,no-of-add-event,no-of-remove-event.
 * **Timestamp:** Timestamp of update event
 * **client-ip:** IP address of the client who is updating the pad
