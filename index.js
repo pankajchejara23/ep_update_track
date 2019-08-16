@@ -18,9 +18,11 @@ var Changeset = require("ep_etherpad-lite/static/js/Changeset");
 // For instance, when client join a pad, update text in pad, leave the pad
 exports.handleMessage = function(hook, context,callback){
 
+
+
   // Fetching data from the context parameter
   msg = context.message.data;
-
+  //console.log(context);
   // building current time stamp
   let date_ob = new Date();
 
@@ -44,7 +46,11 @@ exports.handleMessage = function(hook, context,callback){
   let seconds = date_ob.getSeconds();
 
   // prints date & time in YYYY-MM-DD HH:MM:SS format
-  ts = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+  //ts = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+
+
+  // prints date & time in YYYY-MM-DD HH:MM:SS format
+  ts = hour + ":" + minutes + ":" + seconds + " " + date + "-" + month + "-" + year;
 
   // adding timestamp to the entry to save in file
   data = ts;
@@ -63,8 +69,20 @@ exports.handleMessage = function(hook, context,callback){
   subops = "";
   plus = 0;
   minus = 0;
+
+  file_flag = true;
+
+  if (Boolean(context.message.padId) && file_flag){
+    logfile = context.message.padId+".csv";
+    console.log(logfile);
+    file_flag = false;
+  }
+
   // Iterate over all keys in msg data (data stored in json format)
   for(var attributename in myobject){
+
+
+
 
     // If attributename is type and it is USER_CHANGES then add update entry and set flag true
 
@@ -83,7 +101,7 @@ exports.handleMessage = function(hook, context,callback){
       unpacked = Changeset.unpack(myobject[attributename]);
       //console.log(unpacked);
       // Add old lenght, new length, operations, character bank to the entry
-      data = data + ","+ unpacked.oldLen + "," + unpacked.newLen + "," + unpacked.ops + "," + unpacked.charBank;
+      data = data + ","+ unpacked.oldLen + "," + unpacked.newLen + "," + unpacked.ops + ",'" + unpacked.charBank+"'";
 
       console.log(data);
 
@@ -120,9 +138,11 @@ exports.handleMessage = function(hook, context,callback){
   // if flag is true then only write entry into the file
   if (flag == true){
     // save data in data.csv
-    fs.appendFileSync("data.csv", data, (err) => {
+    console.log("My file:"+logfile);
+    fs.appendFileSync("log_data.csv", data, (err) => {
       if (err) console.log("File can't be saved"+err);
       console.log("Successfully Written to File.");
+
     });
   flag=false;
   }
