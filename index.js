@@ -22,7 +22,7 @@ exports.handleMessage = function(hook, context,callback){
 
   // Fetching data from the context parameter
   msg = context.message.data;
-  //console.log(context);
+  console.log(context);
   // building current time stamp
   let date_ob = new Date();
 
@@ -50,7 +50,7 @@ exports.handleMessage = function(hook, context,callback){
 
 
   // prints date & time in YYYY-MM-DD HH:MM:SS format
-  ts = hour + ":" + minutes + ":" + seconds + " " + date + "-" + month + "-" + year;
+  ts = hours + ":" + minutes + ":" + seconds + " " + date + "-" + month + "-" + year;
 
   // adding timestamp to the entry to save in file
   data = ts;
@@ -66,44 +66,73 @@ exports.handleMessage = function(hook, context,callback){
   // creating a temporary variable with message data
   myobject = msg;
 
+  // For storing changeset of operations
   subops = "";
+
+  // For storing number of characters added
   plus = 0;
+
+  // For storing number of characters deleted
   minus = 0;
 
   file_flag = true;
 
   if (Boolean(context.message.padId) && file_flag){
     logfile = context.message.padId+".csv";
-    console.log(logfile);
+    // console.log(logfile);
     file_flag = false;
   }
+
+
 
   // Iterate over all keys in msg data (data stored in json format)
   for(var attributename in myobject){
 
-
+    //console.log(attributename);
 
 
     // If attributename is type and it is USER_CHANGES then add update entry and set flag true
 
     if (attributename == "type"){
 
+
+      // Check whether user changed his name or not
+      if(myobject[attributename]=='USERINFO_UPDATE')
+
+      {
+
+         ip_entry = "";
+         //console.log('USERINFO_UPDATE called');
+         ip_entry = myobject['userInfo']['ip']+","+myobject['userInfo']['name']+"\n";
+         // Create a new file with IP to Name mapping
+         fs.appendFileSync("ip_mapping.csv", ip_entry, (err) => {
+           if (err) console.log("File can't be saved"+err);
+           console.log("IP mapping written to File.");
+
+         });
+
+
+      }
+
       if (myobject[attributename]=="USER_CHANGES") {
         flag=true;
          data = data +',UPDATE';
        }
      }
-
+     // console.log(myobject);
     // If attributename is changeset and it is with USER_CHANGES type
     if ((attributename == 'changeset') && (flag == true)){
 
+      cs = myobject[attributename];
+
       // Unpack the changeset using Changeset library
       unpacked = Changeset.unpack(myobject[attributename]);
-      //console.log(unpacked);
-      // Add old lenght, new length, operations, character bank to the entry
-      data = data + ","+ unpacked.oldLen + "," + unpacked.newLen + "," + unpacked.ops + ",'" + unpacked.charBank+"'";
+      // console.log(unpacked);
 
-      console.log(data);
+      // Add old lenght, new length, operations, character bank to the entry
+      data = data + ","+ unpacked.oldLen + "," + unpacked.newLen + "," + unpacked.ops + ",'" + (unpacked.charBank).trim()+"'";
+
+      //console.log(data);
 
       // Iterator over the operations extracted from changeset
       var opiterator = Changeset.opIterator(unpacked.ops);
@@ -129,7 +158,8 @@ exports.handleMessage = function(hook, context,callback){
       }
     }
   }
-  console.log("IP:"+context.client.conn.remoteAddress);
+  //console.log("IP:"+context.client.conn.remoteAddress);
+  //console.log(context);
   data = data + "," + plus + "," + minus +  "\n";
   plus = 0;
   minus = 0;
@@ -138,7 +168,7 @@ exports.handleMessage = function(hook, context,callback){
   // if flag is true then only write entry into the file
   if (flag == true){
     // save data in data.csv
-    console.log("My file:"+logfile);
+
     fs.appendFileSync("log_data.csv", data, (err) => {
       if (err) console.log("File can't be saved"+err);
       console.log("Successfully Written to File.");
