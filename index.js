@@ -22,7 +22,7 @@ exports.handleMessage = function(hook, context,callback){
 
   // Fetching data from the context parameter
   msg = context.message.data;
-  console.log(context);
+  //console.log(context);
   // building current time stamp
   let date_ob = new Date();
 
@@ -107,7 +107,7 @@ exports.handleMessage = function(hook, context,callback){
          // Create a new file with IP to Name mapping
          fs.appendFileSync("ip_mapping.csv", ip_entry, (err) => {
            if (err) console.log("File can't be saved"+err);
-           console.log("IP mapping written to File.");
+           //console.log("IP mapping written to File.");
 
          });
 
@@ -163,7 +163,7 @@ exports.handleMessage = function(hook, context,callback){
   data = data + "," + plus + "," + minus +  "\n";
   plus = 0;
   minus = 0;
-  console.log(data);
+  //console.log(data);
 
   // if flag is true then only write entry into the file
   if (flag == true){
